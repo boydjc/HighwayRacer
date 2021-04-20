@@ -16,6 +16,10 @@ int main()
     Texture textureRoadStripe;
     textureRoadStripe.loadFromFile("assets/imgs/roadStripe.png");
 
+    Texture textureCarRed;
+    textureCarRed.loadFromFile("assets/imgs/carRed.png");
+
+    // set the road up
     Sprite spriteRoad;
     spriteRoad.setTexture(textureRoad);
 
@@ -25,6 +29,11 @@ int main()
         spriteRoadStripe[i].setTexture(textureRoadStripe);
         spriteRoadStripe[i].setPosition(525, i*150);
     }
+
+    // set player car up
+    Sprite spriteCar;
+    spriteCar.setTexture(textureCarRed);
+    spriteCar.setPosition(575, 500);
 
     bool gameRunning = false;
 
@@ -60,6 +69,15 @@ int main()
             {
                 gameSpeed -= 0.05;
             }
+        }
+
+        // control player car
+        if(Keyboard::isKeyPressed(Keyboard::Left) && gameRunning)
+        {
+            spriteCar.setPosition(spriteCar.getPosition().x - .1, spriteCar.getPosition().y);
+        }else if(Keyboard::isKeyPressed(Keyboard::Right) && gameRunning)
+        {
+            spriteCar.setPosition(spriteCar.getPosition().x + .1, spriteCar.getPosition().y);
         }
 
 
@@ -100,6 +118,8 @@ int main()
         {
             window.draw(spriteRoadStripe[i]);
         }
+
+        window.draw(spriteCar);
 
         window.display();
     }
