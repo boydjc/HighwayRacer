@@ -74,10 +74,17 @@ int main()
         // control player car
         if(Keyboard::isKeyPressed(Keyboard::Left) && gameRunning)
         {
-            spriteCar.setPosition(spriteCar.getPosition().x - .1, spriteCar.getPosition().y);
+            // make sure that the car can't leave the road
+            if(spriteCar.getPosition().x > 370)
+            {
+                spriteCar.setPosition(spriteCar.getPosition().x - .1, spriteCar.getPosition().y);
+            }
         }else if(Keyboard::isKeyPressed(Keyboard::Right) && gameRunning)
         {
-            spriteCar.setPosition(spriteCar.getPosition().x + .1, spriteCar.getPosition().y);
+            if(spriteCar.getPosition().x < 617)
+            {
+                spriteCar.setPosition(spriteCar.getPosition().x + .1, spriteCar.getPosition().y);
+            }
         }
 
 
