@@ -1,4 +1,5 @@
 #include <SFML/graphics.hpp>
+#include <iostream>
 
 using namespace sf;
 
@@ -30,13 +31,13 @@ int main()
     /* in the game, everything around the car moves instead of the car moving
     *  gameSpeed is the speed at which everything moves which can be considered
     * also to be how fast the car will appear to be moving to the player */
-    float gameSpeed = 520.0f;
+    const float MAXGAMESPEED = 1300.0f;
+    float gameSpeed = 0.0f;
 
     Clock clock;
 
     while(window.isOpen())
     {
-
         /*****************************
         *   Handle the player's input
         ***************************/
@@ -46,6 +47,19 @@ int main()
         }else if(Keyboard::isKeyPressed(Keyboard::Enter))
         {
             gameRunning = true;
+
+        }else if(Keyboard::isKeyPressed(Keyboard::Space) && gameRunning)
+        {
+            if(gameSpeed < MAXGAMESPEED)
+            {
+               gameSpeed += 0.1;
+            }
+        }else
+        {
+            if(gameSpeed > 0.0)
+            {
+                gameSpeed -= 0.05;
+            }
         }
 
 
