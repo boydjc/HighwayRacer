@@ -22,6 +22,9 @@ int main()
     Texture textureCarRed;
     textureCarRed.loadFromFile("assets/imgs/carRed.png");
 
+    Texture textureTree;
+    textureTree.loadFromFile("assets/imgs/tree.png");
+
     // set the road up
     Sprite spriteRoad;
     spriteRoad.setTexture(textureRoad);
@@ -34,24 +37,49 @@ int main()
     }
 
     // environment details
-    Sprite spriteRock[2];
+    //rocks
+    const int NUMBEROFROCKS = 5;
+    Sprite spriteRock[NUMBEROFROCKS];
 
     srand(int(time(0)));
 
-    for(int i=0; i<2; i++)
+    for(int i=0; i<NUMBEROFROCKS; i++)
     {
         spriteRock[i].setTexture(textureRock);
         // spawn the environment details are random locations
 
         // this makes sure that all the rocks are spawned on one side of the road
-        if(i == 0)
+        if(i % 2 ==  0)
         {
-            spriteRock[i].setPosition((rand() % 290), (rand() % 800));
+            spriteRock[i].setPosition((rand() % 280), (rand() % -1) - 3000);
         }else
         {
-            spriteRock[i].setPosition((rand() % 610) + 590, (rand() % 800));
+            spriteRock[i].setPosition((rand() % 670) + 610, (rand() % -1) - 900);
         }
     }
+
+    // trees
+    const int NUMBEROFTREES = 20;
+    Sprite spriteTree[NUMBEROFTREES];
+
+    for(int i=0; i<NUMBEROFTREES; i++)
+    {
+        spriteTree[i].setTexture(textureTree);
+
+        if(i % 2 == 0)
+        {
+            spriteTree[i].setPosition((rand() % 230), (rand() % 1000) - 3000);
+        }
+        else
+        {
+            spriteTree[i].setPosition((rand() % 810) + 780, (rand() % 1000) - 900);
+        }
+
+        spriteTree[i].setOrigin(94, 102);
+        spriteTree[i].setRotation((rand() % 360) + 1);
+    }
+
+
 
     // set player car up
     Sprite spriteCar;
@@ -135,20 +163,37 @@ int main()
                 }
             }
 
-            // do the same for the environment detail
-            for(int i=0; i<2; i++)
+            // do the same for the environment detail but move them at a slightly slower speed
+            for(int i=0; i<NUMBEROFROCKS; i++)
             {
                 spriteRock[i].setPosition(spriteRock[i].getPosition().x, (spriteRock[i].getPosition().y + (gameSpeed/1.5 * dt.asSeconds())));
 
                 if(spriteRock[i].getPosition().y > 679)
                 {
-                    if(i == 0)
+                    if(i % 2 == 0)
                     {
-                        spriteRock[i].setPosition((rand() % 290), (rand() % -1) - 1000);
+                        spriteRock[i].setPosition((rand() % 280), (rand() % -1) - 8000);
                     }
                     else
                     {
-                        spriteRock[i].setPosition((rand() % 620) + 590, (rand() % -1) - 1000);
+                        spriteRock[i].setPosition((rand() % 810) + 780, (rand() % -1) - 5000);
+                    }
+                }
+            }
+
+            for(int i=0; i<NUMBEROFTREES; i++)
+            {
+                spriteTree[i].setPosition(spriteTree[i].getPosition().x, (spriteTree[i].getPosition().y + (gameSpeed/1.5 * dt.asSeconds())));
+
+                if(spriteTree[i].getPosition().y > 800)
+                {
+                    if(i % 2 == 0)
+                    {
+                        spriteTree[i].setPosition((rand() % 280), (rand() % -1) - 200);
+                    }
+                    else
+                    {
+                        spriteTree[i].setPosition((rand() % 770) + 750, (rand() % -1) - 200);
                     }
                 }
             }
@@ -162,16 +207,24 @@ int main()
         window.clear();
 
         window.draw(spriteRoad);
+
         for(int i=0; i<5; i++)
         {
             window.draw(spriteRoadStripe[i]);
         }
 
         window.draw(spriteCar);
-        for(int i=0; i<2; i++)
+
+        for(int i=0; i<NUMBEROFROCKS; i++)
         {
             window.draw(spriteRock[i]);
         }
+
+        for(int i=0; i<NUMBEROFTREES; i++)
+        {
+            window.draw(spriteTree[i]);
+        }
+
         window.display();
     }
     return 0;
