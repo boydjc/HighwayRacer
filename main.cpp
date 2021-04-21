@@ -16,6 +16,9 @@ int main()
     Texture textureRoadStripe;
     textureRoadStripe.loadFromFile("assets/imgs/roadStripe.png");
 
+    Texture textureRock;
+    textureRock.loadFromFile("assets/imgs/rock.png");
+
     Texture textureCarRed;
     textureCarRed.loadFromFile("assets/imgs/carRed.png");
 
@@ -28,6 +31,26 @@ int main()
     {
         spriteRoadStripe[i].setTexture(textureRoadStripe);
         spriteRoadStripe[i].setPosition(525, i*150);
+    }
+
+    // environment details
+    Sprite spriteRock[2];
+
+    srand(int(time(0)));
+
+    for(int i=0; i<2; i++)
+    {
+        spriteRock[i].setTexture(textureRock);
+        // spawn the environment details are random locations
+
+        // this makes sure that all the rocks are spawned on one side of the road
+        if(i == 0)
+        {
+            spriteRock[i].setPosition((rand() % 290), (rand() % 800));
+        }else
+        {
+            spriteRock[i].setPosition((rand() % 610) + 590, (rand() % 800));
+        }
     }
 
     // set player car up
@@ -49,7 +72,7 @@ int main()
     {
         /*****************************
         *   Handle the player's input
-        ***************************/
+        ******************************/
         if(Keyboard::isKeyPressed(Keyboard::Escape))
         {
             window.close();
@@ -96,12 +119,12 @@ int main()
         if(gameRunning)
         {
             // move everything in relation to the game speed
-            // road stripes
 
             Time dt = clock.restart();
 
             for(int i=0; i<5; i++)
             {
+                // road stripes
                 spriteRoadStripe[i].setPosition(spriteRoadStripe[i].getPosition().x, (spriteRoadStripe[i].getPosition().y + (gameSpeed * dt.asSeconds())));
 
                 /* when the stripe gets off screen, put it back at the top to give the illusion of
@@ -109,6 +132,24 @@ int main()
                 if(spriteRoadStripe[i].getPosition().y > 679)
                 {
                     spriteRoadStripe[i].setPosition(spriteRoadStripe[i].getPosition().x, -70);
+                }
+            }
+
+            // do the same for the environment detail
+            for(int i=0; i<2; i++)
+            {
+                spriteRock[i].setPosition(spriteRock[i].getPosition().x, (spriteRock[i].getPosition().y + (gameSpeed/1.5 * dt.asSeconds())));
+
+                if(spriteRock[i].getPosition().y > 679)
+                {
+                    if(i == 0)
+                    {
+                        spriteRock[i].setPosition((rand() % 290), (rand() % -1) - 1000);
+                    }
+                    else
+                    {
+                        spriteRock[i].setPosition((rand() % 620) + 590, (rand() % -1) - 1000);
+                    }
                 }
             }
         }
@@ -127,7 +168,10 @@ int main()
         }
 
         window.draw(spriteCar);
-
+        for(int i=0; i<2; i++)
+        {
+            window.draw(spriteRock[i]);
+        }
         window.display();
     }
     return 0;
