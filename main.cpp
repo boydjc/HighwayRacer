@@ -40,6 +40,9 @@ int main()
     Texture textureTree;
     textureTree.loadFromFile("assets/imgs/tree.png");
 
+    Texture textureSpeedometer;
+    textureSpeedometer.loadFromFile("assets/imgs/speedometer.png");
+
     // set the road up
     Sprite spriteRoad;
     spriteRoad.setTexture(textureRoad);
@@ -105,6 +108,11 @@ int main()
     // there will only be a few sprites that will just change textures randomly
     Sprite spriteNpc[3];
 
+    // set up the HUD
+    Sprite spriteSpeedometer;
+    spriteSpeedometer.setTexture(textureSpeedometer);
+    spriteSpeedometer.setPosition(840, 520);
+
     bool gameRunning = false;
 
     /* in the game, everything around the car moves instead of the car moving
@@ -137,7 +145,7 @@ int main()
         {
             if(gameSpeed > 0.0)
             {
-                gameSpeed -= 0.05;
+                gameSpeed -= 0.07;
             }
         }
 
@@ -243,6 +251,8 @@ int main()
         {
             window.draw(spriteTree[i]);
         }
+
+        window.draw(spriteSpeedometer);
 
         window.display();
     }
