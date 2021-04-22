@@ -19,8 +19,23 @@ int main()
     Texture textureRock;
     textureRock.loadFromFile("assets/imgs/rock.png");
 
-    Texture textureCarRed;
-    textureCarRed.loadFromFile("assets/imgs/carRed.png");
+    Texture textureCars[16];
+    textureCars[0].loadFromFile("assets/imgs/carOne.png");
+    textureCars[1].loadFromFile("assets/imgs/carTwo.png");
+    textureCars[2].loadFromFile("assets/imgs/carThree.png");
+    textureCars[3].loadFromFile("assets/imgs/carFour.png");
+    textureCars[4].loadFromFile("assets/imgs/carFive.png");
+    textureCars[5].loadFromFile("assets/imgs/carSix.png");
+    textureCars[6].loadFromFile("assets/imgs/carSeven.png");
+    textureCars[7].loadFromFile("assets/imgs/carEight.png");
+    textureCars[8].loadFromFile("assets/imgs/carNine.png");
+    textureCars[9].loadFromFile("assets/imgs/carTen.png");
+    textureCars[10].loadFromFile("assets/imgs/carEleven.png");
+    textureCars[11].loadFromFile("assets/imgs/carTwelve.png");
+    textureCars[12].loadFromFile("assets/imgs/carThirteen.png");
+    textureCars[13].loadFromFile("assets/imgs/carFourteen.png");
+    textureCars[14].loadFromFile("assets/imgs/carFifteen.png");
+    textureCars[15].loadFromFile("assets/imgs/carSixteen.png");
 
     Texture textureTree;
     textureTree.loadFromFile("assets/imgs/tree.png");
@@ -38,7 +53,7 @@ int main()
 
     // environment details
     //rocks
-    const int NUMBEROFROCKS = 5;
+    const int NUMBEROFROCKS = 2;
     Sprite spriteRock[NUMBEROFROCKS];
 
     srand(int(time(0)));
@@ -48,13 +63,13 @@ int main()
         spriteRock[i].setTexture(textureRock);
         // spawn the environment details are random locations
 
-        // this makes sure that all the rocks are spawned on one side of the road
-        if(i % 2 ==  0)
+        // this makes sure that all the rocks spawn on different sides of the road
+        if(i ==  0)
         {
-            spriteRock[i].setPosition((rand() % 280), (rand() % -1) - 3000);
+            spriteRock[i].setPosition((rand() % 280), (rand() % 900) - 1500);
         }else
         {
-            spriteRock[i].setPosition((rand() % 670) + 610, (rand() % -1) - 900);
+            spriteRock[i].setPosition((rand() % 770) + 710, (rand() % 900) - 900);
         }
     }
 
@@ -68,11 +83,11 @@ int main()
 
         if(i % 2 == 0)
         {
-            spriteTree[i].setPosition((rand() % 230), (rand() % 1000) - 3000);
+            spriteTree[i].setPosition((rand() % 230), (rand() % 1000) - 500);
         }
         else
         {
-            spriteTree[i].setPosition((rand() % 810) + 780, (rand() % 1000) - 900);
+            spriteTree[i].setPosition((rand() % 810) + 780, (rand() % 1000) - 500);
         }
 
         spriteTree[i].setOrigin(94, 102);
@@ -82,16 +97,20 @@ int main()
 
 
     // set player car up
-    Sprite spriteCar;
-    spriteCar.setTexture(textureCarRed);
-    spriteCar.setPosition(575, 500);
+    Sprite spritePlayer;
+    spritePlayer.setTexture(textureCars[0]);
+    spritePlayer.setPosition(575, 500);
+
+    // set up the other cars that will be in the way
+    // there will only be a few sprites that will just change textures randomly
+    Sprite spriteNpc[3];
 
     bool gameRunning = false;
 
     /* in the game, everything around the car moves instead of the car moving
     *  gameSpeed is the speed at which everything moves which can be considered
     * also to be how fast the car will appear to be moving to the player */
-    const float MAXGAMESPEED = 1300.0f;
+    const float MAXGAMESPEED = 1800.0f;
     float gameSpeed = 0.0f;
 
     Clock clock;
@@ -126,15 +145,15 @@ int main()
         if(Keyboard::isKeyPressed(Keyboard::Left) && gameRunning)
         {
             // make sure that the car can't leave the road
-            if(spriteCar.getPosition().x > 370)
+            if(spritePlayer.getPosition().x > 370)
             {
-                spriteCar.setPosition(spriteCar.getPosition().x - .1, spriteCar.getPosition().y);
+                spritePlayer.setPosition(spritePlayer.getPosition().x - .2, spritePlayer.getPosition().y);
             }
         }else if(Keyboard::isKeyPressed(Keyboard::Right) && gameRunning)
         {
-            if(spriteCar.getPosition().x < 617)
+            if(spritePlayer.getPosition().x < 633)
             {
-                spriteCar.setPosition(spriteCar.getPosition().x + .1, spriteCar.getPosition().y);
+                spritePlayer.setPosition(spritePlayer.getPosition().x + .2, spritePlayer.getPosition().y);
             }
         }
 
@@ -144,7 +163,7 @@ int main()
         *   Update the scene
         ******************************/
 
-        if(gameRunning)
+        if(gameRunning && gameSpeed > 0.0)
         {
             // move everything in relation to the game speed
 
@@ -170,13 +189,13 @@ int main()
 
                 if(spriteRock[i].getPosition().y > 679)
                 {
-                    if(i % 2 == 0)
+                    if(i == 0)
                     {
-                        spriteRock[i].setPosition((rand() % 280), (rand() % -1) - 8000);
+                        spriteRock[i].setPosition((rand() % 280), (rand() % -1) - 1000);
                     }
                     else
                     {
-                        spriteRock[i].setPosition((rand() % 810) + 780, (rand() % -1) - 5000);
+                        spriteRock[i].setPosition((rand() % 810) + 780, (rand() % -1) - 500);
                     }
                 }
             }
@@ -187,7 +206,7 @@ int main()
 
                 if(spriteTree[i].getPosition().y > 800)
                 {
-                    if(i % 2 == 0)
+                    if(i == 0)
                     {
                         spriteTree[i].setPosition((rand() % 280), (rand() % -1) - 200);
                     }
@@ -213,7 +232,7 @@ int main()
             window.draw(spriteRoadStripe[i]);
         }
 
-        window.draw(spriteCar);
+        window.draw(spritePlayer);
 
         for(int i=0; i<NUMBEROFROCKS; i++)
         {
