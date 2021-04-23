@@ -97,12 +97,13 @@ int main()
         spriteTree[i].setRotation((rand() % 360) + 1);
     }
 
-
+    enum class CarState{ ACCELERATE, DECELERATE, STOPPED };
 
     // set player car up
     Sprite spritePlayer;
     spritePlayer.setTexture(textureCars[0]);
     spritePlayer.setPosition(575, 500);
+    CarState playerCarState = CarState::STOPPED;
 
     // set up the other cars that will be in the way
     // there will only be a few sprites that will just change textures randomly
@@ -112,6 +113,18 @@ int main()
     Sprite spriteSpeedometer;
     spriteSpeedometer.setTexture(textureSpeedometer);
     spriteSpeedometer.setPosition(840, 520);
+
+    // a triangle that will represent the speedometer needle
+    ConvexShape dometerNeedle(3);
+    dometerNeedle.setPoint(0, Vector2f(0, 10));
+    dometerNeedle.setPoint(1, Vector2f(5, 80));
+    dometerNeedle.setPoint(2, Vector2f(-5, 80));
+
+    dometerNeedle.setPosition(915, 593);
+    dometerNeedle.setFillColor(Color::Red);
+    FloatRect dometerBounds = dometerNeedle.getLocalBounds();
+    dometerNeedle.setOrigin(dometerBounds.left + dometerBounds.width - 5, dometerBounds.top + dometerBounds.height - 5);
+    dometerNeedle.setRotation(225);
 
     bool gameRunning = false;
 
@@ -137,12 +150,18 @@ int main()
 
         }else if(Keyboard::isKeyPressed(Keyboard::Space) && gameRunning)
         {
+
+            playerCarState = CarState::ACCELERATE;
+
             if(gameSpeed < MAXGAMESPEED)
             {
                gameSpeed += 0.1;
             }
         }else
         {
+
+            playerCarState = CarState::DECELERATE;
+
             if(gameSpeed > 0.0)
             {
                 gameSpeed -= 0.07;
@@ -224,6 +243,15 @@ int main()
                     }
                 }
             }
+
+            // move the odometer meter
+            if(gameSpeed < MAXGAMESPEED && playerCarState == CarState::ACCELERATE)
+            {
+                dometerNeedle.setRotation(dometerNeedle.getRotation() + (gameSpeed/25 * dt.asSeconds()));
+            }else if(gameSpeed > 0 && playerCarState == CarState::DECELERATE)
+            {
+                dometerNeedle.setRotation(dometerNeedle.getRotation() - (gameSpeed/35.4 * dt.asSeconds()));
+            }
         }
 
 
@@ -253,6 +281,7 @@ int main()
         }
 
         window.draw(spriteSpeedometer);
+        window.draw(dometerNeedle);
 
         window.display();
     }
