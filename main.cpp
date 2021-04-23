@@ -107,7 +107,22 @@ int main()
 
     // set up the other cars that will be in the way
     // there will only be a few sprites that will just change textures randomly
-    Sprite spriteNpc[3];
+    const int NUMBEROFNPCS = 2;
+    Sprite spriteNpc[NUMBEROFNPCS];
+
+    for(int i=0; i<NUMBEROFNPCS; i++)
+    {
+        int textureChoice = rand() % 15;
+        spriteNpc[i].setTexture(textureCars[textureChoice]);
+        if(i == 0)
+        {
+            spriteNpc[i].setPosition(400, (rand() % 500));
+        }
+        else
+        {
+            spriteNpc[i].setPosition(580, (rand() % 500));
+        }
+    }
 
     // set up the HUD
     Sprite spriteSpeedometer;
@@ -252,6 +267,12 @@ int main()
             {
                 dometerNeedle.setRotation(dometerNeedle.getRotation() - (gameSpeed/35.4 * dt.asSeconds()));
             }
+
+            // move the npc cars
+            for(int i=0; i<NUMBEROFNPCS; i++)
+            {
+                spriteNpc[i].setPosition(spriteNpc[i].getPosition().x, (spriteNpc[i].getPosition().y + (gameSpeed * dt.asSeconds())));
+            }
         }
 
 
@@ -282,6 +303,11 @@ int main()
 
         window.draw(spriteSpeedometer);
         window.draw(dometerNeedle);
+
+        for(int i=0; i<NUMBEROFNPCS; i++)
+        {
+            window.draw(spriteNpc[i]);
+        }
 
         window.display();
     }
