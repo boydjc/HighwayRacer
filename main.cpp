@@ -168,7 +168,7 @@ int main()
 
             if(gameSpeed < MAXGAMESPEED)
             {
-               gameSpeed += 0.1;
+               gameSpeed += 0.55;
             }
         }else
         {
@@ -177,7 +177,7 @@ int main()
 
             if(gameSpeed > 0.0)
             {
-                gameSpeed -= 0.07;
+                gameSpeed -= 0.38;
             }
         }
 
@@ -187,13 +187,13 @@ int main()
             // make sure that the car can't leave the road
             if(spritePlayer.getPosition().x > 370)
             {
-                spritePlayer.setPosition(spritePlayer.getPosition().x - .2, spritePlayer.getPosition().y);
+                spritePlayer.setPosition(spritePlayer.getPosition().x - .8, spritePlayer.getPosition().y);
             }
         }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && gameRunning)
         {
             if(spritePlayer.getPosition().x < 633)
             {
-                spritePlayer.setPosition(spritePlayer.getPosition().x + .2, spritePlayer.getPosition().y);
+                spritePlayer.setPosition(spritePlayer.getPosition().x + .8, spritePlayer.getPosition().y);
             }
         }
 
@@ -260,10 +260,10 @@ int main()
             // move the odometer meter
             if(gameSpeed < MAXGAMESPEED && playerCarState == CarState::ACCELERATE)
             {
-                dometerNeedle.setRotation(dometerNeedle.getRotation() + (gameSpeed/25 * dt.asSeconds()));
+                dometerNeedle.setRotation(dometerNeedle.getRotation() + (gameSpeed/26 * dt.asSeconds()));
             }else if(gameSpeed > 0 && playerCarState == CarState::DECELERATE)
             {
-                dometerNeedle.setRotation(dometerNeedle.getRotation() - (gameSpeed/35.4 * dt.asSeconds()));
+                dometerNeedle.setRotation(dometerNeedle.getRotation() - (gameSpeed/37.5 * dt.asSeconds()));
             }
 
             // move the npc cars
