@@ -1,25 +1,23 @@
-#include <SFML/graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include <iostream>
-
-using namespace sf;
 
 int main()
 {
-    VideoMode vm(1086, 679);
+    sf::VideoMode vm(1086, 679);
 
-    RenderWindow window(vm, "Highway Racer", Style::Titlebar);
+    sf::RenderWindow window(vm, "Highway Racer", sf::Style::Titlebar);
 
     // Load textures here
-    Texture textureRoad;
+    sf::Texture textureRoad;
     textureRoad.loadFromFile("assets/imgs/background.png");
 
-    Texture textureRoadStripe;
+    sf::Texture textureRoadStripe;
     textureRoadStripe.loadFromFile("assets/imgs/roadStripe.png");
 
-    Texture textureRock;
+    sf::Texture textureRock;
     textureRock.loadFromFile("assets/imgs/rock.png");
 
-    Texture textureCars[16];
+    sf::Texture textureCars[16];
     textureCars[0].loadFromFile("assets/imgs/carOne.png");
     textureCars[1].loadFromFile("assets/imgs/carTwo.png");
     textureCars[2].loadFromFile("assets/imgs/carThree.png");
@@ -37,17 +35,17 @@ int main()
     textureCars[14].loadFromFile("assets/imgs/carFifteen.png");
     textureCars[15].loadFromFile("assets/imgs/carSixteen.png");
 
-    Texture textureTree;
+    sf::Texture textureTree;
     textureTree.loadFromFile("assets/imgs/tree.png");
 
-    Texture textureSpeedometer;
+    sf::Texture textureSpeedometer;
     textureSpeedometer.loadFromFile("assets/imgs/speedometer.png");
 
     // set the road up
-    Sprite spriteRoad;
+    sf::Sprite spriteRoad;
     spriteRoad.setTexture(textureRoad);
 
-    Sprite spriteRoadStripe[5];
+    sf::Sprite spriteRoadStripe[5];
     for(int i=0; i<5; i++)
     {
         spriteRoadStripe[i].setTexture(textureRoadStripe);
@@ -57,17 +55,17 @@ int main()
     // environment details
     //rocks
     const int NUMBEROFROCKS = 2;
-    Sprite spriteRock[NUMBEROFROCKS];
+    sf::Sprite spriteRock[NUMBEROFROCKS];
 
     srand(int(time(0)));
 
     for(int i=0; i<NUMBEROFROCKS; i++)
     {
         spriteRock[i].setTexture(textureRock);
-        // spawn the environment details are random locations
+        // spawn the environment details in random locations
 
         // this makes sure that all the rocks spawn on different sides of the road
-        if(i ==  0)
+        if(i == 0)
         {
             spriteRock[i].setPosition((rand() % 280), (rand() % 900) - 1500);
         }else
@@ -78,7 +76,7 @@ int main()
 
     // trees
     const int NUMBEROFTREES = 20;
-    Sprite spriteTree[NUMBEROFTREES];
+    sf::Sprite spriteTree[NUMBEROFTREES];
 
     for(int i=0; i<NUMBEROFTREES; i++)
     {
@@ -100,7 +98,7 @@ int main()
     enum class CarState{ ACCELERATE, DECELERATE, STOPPED };
 
     // set player car up
-    Sprite spritePlayer;
+    sf::Sprite spritePlayer;
     spritePlayer.setTexture(textureCars[0]);
     spritePlayer.setPosition(575, 500);
     CarState playerCarState = CarState::STOPPED;
@@ -108,7 +106,7 @@ int main()
     // set up the other cars that will be in the way
     // there will only be a few sprites that will just change textures randomly
     const int NUMBEROFNPCS = 2;
-    Sprite spriteNpc[NUMBEROFNPCS];
+    sf::Sprite spriteNpc[NUMBEROFNPCS];
 
     for(int i=0; i<NUMBEROFNPCS; i++)
     {
@@ -125,19 +123,19 @@ int main()
     }
 
     // set up the HUD
-    Sprite spriteSpeedometer;
+    sf::Sprite spriteSpeedometer;
     spriteSpeedometer.setTexture(textureSpeedometer);
     spriteSpeedometer.setPosition(840, 520);
 
     // a triangle that will represent the speedometer needle
-    ConvexShape dometerNeedle(3);
-    dometerNeedle.setPoint(0, Vector2f(0, 10));
-    dometerNeedle.setPoint(1, Vector2f(5, 80));
-    dometerNeedle.setPoint(2, Vector2f(-5, 80));
+    sf::ConvexShape dometerNeedle(3);
+    dometerNeedle.setPoint(0, sf::Vector2f(0, 10));
+    dometerNeedle.setPoint(1, sf::Vector2f(5, 80));
+    dometerNeedle.setPoint(2, sf::Vector2f(-5, 80));
 
     dometerNeedle.setPosition(915, 593);
-    dometerNeedle.setFillColor(Color::Red);
-    FloatRect dometerBounds = dometerNeedle.getLocalBounds();
+    dometerNeedle.setFillColor(sf::Color::Red);
+    sf::FloatRect dometerBounds = dometerNeedle.getLocalBounds();
     dometerNeedle.setOrigin(dometerBounds.left + dometerBounds.width - 5, dometerBounds.top + dometerBounds.height - 5);
     dometerNeedle.setRotation(225);
 
@@ -149,21 +147,21 @@ int main()
     const float MAXGAMESPEED = 1800.0f;
     float gameSpeed = 0.0f;
 
-    Clock clock;
+    sf::Clock clock;
 
     while(window.isOpen())
     {
         /*****************************
         *   Handle the player's input
         ******************************/
-        if(Keyboard::isKeyPressed(Keyboard::Escape))
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
         {
             window.close();
-        }else if(Keyboard::isKeyPressed(Keyboard::Enter))
+        }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
         {
             gameRunning = true;
 
-        }else if(Keyboard::isKeyPressed(Keyboard::Space) && gameRunning)
+        }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameRunning)
         {
 
             playerCarState = CarState::ACCELERATE;
@@ -184,14 +182,14 @@ int main()
         }
 
         // control player car
-        if(Keyboard::isKeyPressed(Keyboard::Left) && gameRunning)
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && gameRunning)
         {
             // make sure that the car can't leave the road
             if(spritePlayer.getPosition().x > 370)
             {
                 spritePlayer.setPosition(spritePlayer.getPosition().x - .2, spritePlayer.getPosition().y);
             }
-        }else if(Keyboard::isKeyPressed(Keyboard::Right) && gameRunning)
+        }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && gameRunning)
         {
             if(spritePlayer.getPosition().x < 633)
             {
@@ -209,7 +207,7 @@ int main()
         {
             // move everything in relation to the game speed
 
-            Time dt = clock.restart();
+	    sf::Time dt = clock.restart();
 
             for(int i=0; i<5; i++)
             {
