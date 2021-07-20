@@ -114,11 +114,13 @@ int main()
         spriteNpc[i].setTexture(textureCars[textureChoice]);
         if(i == 0)
         {
-            spriteNpc[i].setPosition(400, (rand() % 1) - 2000);
+	    spriteNpc[i].setPosition(400, 100);
+            //spriteNpc[i].setPosition(400, (rand() % 1) - 2000);
         }
         else
         {
-            spriteNpc[i].setPosition(580, (rand() % 1) - 4000);
+	    spriteNpc[i].setPosition(400, 300);
+            //spriteNpc[i].setPosition(580, (rand() % 1) - 4000);
         }
     }
 
@@ -292,7 +294,13 @@ int main()
             // move the npc cars
 	    for(int i=0; i<NUMBEROFNPCS; i++)
 	    {
-		spriteNpc[i].setPosition(spriteNpc[i].getPosition().x, (spriteNpc[i].getPosition().y - (5 * dt.asSeconds())));
+		if(playerCarState == CarState::ACCELERATE)
+		{
+		    spriteNpc[i].setPosition(spriteNpc[i].getPosition().x, (spriteNpc[i].getPosition().y + (gameSpeed * dt.asSeconds())));
+		}else if(playerCarState == CarState::DECELERATE)
+		{
+		    spriteNpc[i].setPosition(spriteNpc[i].getPosition().x, (spriteNpc[i].getPosition().y - (gameSpeed * dt.asSeconds())));
+		}
 
 		// if the we pass the npc, move the npc back to the front of the road
 		if(spriteNpc[i].getPosition().y > 800)
