@@ -1,5 +1,7 @@
 #include <SFML/Graphics.hpp>
+
 #include <iostream>
+#include <sstream>
 
 int main()
 {
@@ -102,6 +104,7 @@ int main()
     spritePlayer.setTexture(textureCars[0]);
     spritePlayer.setPosition(575, 500);
     CarState playerCarState = CarState::STOPPED;
+    int playerScore = 0;
 
     // set up the other cars that will be in the way
     // there will only be a few sprites that will just change textures randomly
@@ -240,6 +243,11 @@ int main()
 
 	sf::Time dt = clock.restart();
 
+	std::stringstream ss;
+
+	ss << "Score: " << playerScore;
+	score.setString(ss.str());
+
         if(gameRunning)
         {
 
@@ -314,6 +322,9 @@ int main()
 		    // set a new texture for the sprite
 		    int textureChoice = rand() % 15;
 		    spriteNpc[i].setTexture(textureCars[textureChoice]);
+
+		    // increment player score
+		    playerScore++;
 		}
 	    }
 
