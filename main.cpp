@@ -203,13 +203,15 @@ int main()
             }
         }else
         {
+	    if(gameRunning)
+	    {
+                playerCarState = CarState::DECELERATE;
 
-            playerCarState = CarState::DECELERATE;
-
-            if(gameSpeed > 0.0)
-            {
-                gameSpeed -= 0.38;
-            }
+                if(gameSpeed > 0.0)
+                {
+                    gameSpeed -= 0.38;
+                }
+	    }
         }
 
         // control player car
@@ -234,10 +236,10 @@ int main()
         *   Update the scene
         ******************************/
 
+	sf::Time dt = clock.restart();
+
         if(gameRunning)
         {
-	
-	    sf::Time dt = clock.restart();
 
             for(int i=0; i<5; i++)
 	    {
@@ -290,7 +292,7 @@ int main()
             // move the npc cars
 	    for(int i=0; i<NUMBEROFNPCS; i++)
 	    {
-		spriteNpc[i].setPosition(spriteNpc[i].getPosition().x, (spriteNpc[i].getPosition().y - (0 * dt.asSeconds())));
+		spriteNpc[i].setPosition(spriteNpc[i].getPosition().x, (spriteNpc[i].getPosition().y - (5 * dt.asSeconds())));
 
 		// if the we pass the npc, move the npc back to the front of the road
 		if(spriteNpc[i].getPosition().y > 800)
