@@ -106,26 +106,12 @@ int main()
     CarState playerCarState = CarState::STOPPED;
     int playerScore = 0;
 
-    // set up the other cars that will be in the way
-    // there will only be a few sprites that will just change textures randomly
-    const int NUMBEROFNPCS = 2;
-    sf::Sprite spriteNpc[NUMBEROFNPCS];
-
-    for(int i=0; i<NUMBEROFNPCS; i++)
-    {
-        int textureChoice = rand() % 15;
-        spriteNpc[i].setTexture(textureCars[textureChoice]);
-        if(i == 0)
-        {
-	    spriteNpc[i].setPosition(400, 100);
-            //spriteNpc[i].setPosition(400, (rand() % 1) - 2000);
-        }
-        else
-        {
-	    spriteNpc[i].setPosition(400, 300);
-            //spriteNpc[i].setPosition(580, (rand() % 1) - 4000);
-        }
-    }
+    // set up the npc car
+    // it will just be one sprite that switches textures
+    sf::Sprite spriteNpc;
+    int textureChoice = rand() % 15;
+    spriteNpc.setTexture(textureCars[textureChoice]);
+    spriteNpc.setPosition((rand() % 345) + 344, (rand() % 1) - 2000);
 
     // set up the HUD
     sf::Sprite spriteSpeedometer;
@@ -149,7 +135,7 @@ int main()
     /* in the game, everything around the car moves instead of the car moving
     *  gameSpeed is the speed at which everything moves which can be considered
     * also to be how fast the car will appear to be moving to the player */
-    const float MAXGAMESPEED = 1800.0f;
+    const float MAXGAMESPEED = 1500.0f;
     float gameSpeed = 0.0f;
 
     sf::Font font;
@@ -300,51 +286,40 @@ int main()
 	    }
 
             // move the npc cars
-	    for(int i=0; i<NUMBEROFNPCS; i++)
-	    {
-		if(playerCarState == CarState::ACCELERATE)
-		{
-		    spriteNpc[i].setPosition(spriteNpc[i].getPosition().x, (spriteNpc[i].getPosition().y + (gameSpeed * dt.asSeconds())));
-		}else if(playerCarState == CarState::DECELERATE)
-		{
-		    spriteNpc[i].setPosition(spriteNpc[i].getPosition().x, (spriteNpc[i].getPosition().y - (gameSpeed * dt.asSeconds())));
-		}
-
-		// if the we pass the npc, move the npc back to the front of the road
-		if(spriteNpc[i].getPosition().y > 800)
-		{
-		    if(i == 0){
-			spriteNpc[i].setPosition(400, (rand() % 1) - 2000);
-		    }else{
-			spriteNpc[i].setPosition(580, (rand() % 1) - 4000);
-		    }
-
-		    // set a new texture for the sprite
-		    int textureChoice = rand() % 15;
-		    spriteNpc[i].setTexture(textureCars[textureChoice]);
-
-		    // increment player score
-		    playerScore++;
-		}
-	    }
-
-
 	    if(playerCarState == CarState::ACCELERATE)
 	    {
-	        // move the odometer meter
+		spriteNpc.setPosition(spriteNpc.getPosition().x, (spriteNpc.getPosition().y + (gameSpeed * dt.asSeconds())));
+
+                // move the odometer meter
 	        if(gameSpeed < MAXGAMESPEED)
 	        {
 		    dometerNeedle.setRotation(dometerNeedle.getRotation() + (gameSpeed/26 * dt.asSeconds()));
 	        }
-	    }
-	    else if(playerCarState == CarState::DECELERATE)
+
+	    }else if(playerCarState == CarState::DECELERATE)
 	    {
-		// move the odometer the opposite way 
+	        spriteNpc.setPosition(spriteNpc.getPosition().x, (spriteNpc.getPosition().y - (gameSpeed/3 * dt.asSeconds())));
+
+                // move the odometer the opposite way 
 		if(gameSpeed > 0.0)
 		{
 		    dometerNeedle.setRotation(dometerNeedle.getRotation() - (gameSpeed/37.5 * dt.asSeconds()));
 		}
 	    }
+
+	    // if the we pass the npc, move the npc back to the front of the road
+	    if(spriteNpc.getPosition().y > 800)
+	    {
+		spriteNpc.setPosition((rand() % 345) + 344, (rand() % 1) - 2000);
+
+	        // set a new texture for the sprite
+		int textureChoice = rand() % 15;
+		spriteNpc.setTexture(textureCars[textureChoice]);
+
+		// increment player score
+		playerScore++;
+	    }
+
 	}
 
 
@@ -376,10 +351,7 @@ int main()
         window.draw(spriteSpeedometer);
         window.draw(dometerNeedle);
 
-        for(int i=0; i<NUMBEROFNPCS; i++)
-        {
-            window.draw(spriteNpc[i]);
-        }
+        window.draw(spriteNpc);
 
 	window.draw(score);
 
