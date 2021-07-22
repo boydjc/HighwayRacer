@@ -3,6 +3,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "Player.h"
+
 int main()
 {
     sf::VideoMode vm(1086, 679);
@@ -97,14 +99,11 @@ int main()
         spriteTree[i].setRotation((rand() % 360) + 1);
     }
 
-    enum class CarState{ ACCELERATE, DECELERATE, STOPPED };
-
     // set player car up
-    sf::Sprite spritePlayer;
-    spritePlayer.setTexture(textureCars[0]);
-    spritePlayer.setPosition(575, 500);
-    CarState playerCarState = CarState::STOPPED;
-    int playerScore = 0;
+    Player player;
+    player.setTexture(textureCars[0]);
+    player.setPlayerPosition(575, 500);
+    player.setCarState(Player::CarState::STOPPED);
 
     // set up the npc car
     // it will just be one sprite that switches textures
@@ -186,7 +185,7 @@ int main()
 	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameRunning)
         {
 
-            playerCarState = CarState::ACCELERATE;
+            player.setCarState(Player::CarState::ACCELERATE);
 
             if(gameSpeed < MAXGAMESPEED)
             {
@@ -196,7 +195,7 @@ int main()
         {
 	    if(gameRunning)
 	    {
-                playerCarState = CarState::DECELERATE;
+                player.setCarState(Player::CarState::DECELERATE);
 
                 if(gameSpeed > 0.0)
                 {
@@ -209,15 +208,15 @@ int main()
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && gameRunning)
         {
             // make sure that the car can't leave the road
-            if(spritePlayer.getPosition().x > 370)
+            if(player.getPlayerPosition().x > 370)
             {
-                spritePlayer.setPosition(spritePlayer.getPosition().x - .8, spritePlayer.getPosition().y);
+                player.setPlayerPosition(player.getPlayerPosition().x - .8, player.getPlayerPosition().y);
             }
         }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && gameRunning)
         {
-            if(spritePlayer.getPosition().x < 633)
+            if(player.getPlayerPosition().x < 633)
             {
-                spritePlayer.setPosition(spritePlayer.getPosition().x + .8, spritePlayer.getPosition().y);
+                player.setPlayerPosition(player.getPlayerPosition().x + .8, player.getPlayerPosition().y);
             }
         }
 
@@ -231,7 +230,7 @@ int main()
 
 	std::stringstream ss;
 
-	ss << "Score: " << playerScore;
+	ss << "Score: " << player.getScore();;
 	score.setString(ss.str());
 
         if(gameRunning)
@@ -286,7 +285,7 @@ int main()
 	    }
 
             // move the npc cars
-	    if(playerCarState == CarState::ACCELERATE)
+	    if(player.getCarState() == Player::CarState::ACCELERATE)
 	    {
 		spriteNpc.setPosition(spriteNpc.getPosition().x, (spriteNpc.getPosition().y + (gameSpeed * dt.asSeconds())));
 
@@ -296,7 +295,7 @@ int main()
 		    dometerNeedle.setRotation(dometerNeedle.getRotation() + (gameSpeed/26 * dt.asSeconds()));
 	        }
 
-	    }else if(playerCarState == CarState::DECELERATE)
+	    }else if(player.getCarState() == Player::CarState::DECELERATE)
 	    {
 	        spriteNpc.setPosition(spriteNpc.getPosition().x, (spriteNpc.getPosition().y - (gameSpeed/3 * dt.asSeconds())));
 
@@ -317,7 +316,7 @@ int main()
 		spriteNpc.setTexture(textureCars[textureChoice]);
 
 		// increment player score
-		playerScore++;
+		player.setScore(player.getScore() + 1);
 	    }
 
 	}
@@ -336,7 +335,7 @@ int main()
             window.draw(spriteRoadStripe[i]);
         }
 
-        window.draw(spritePlayer);
+        window.draw(player.getSprite());
 
         for(int i=0; i<NUMBEROFROCKS; i++)
         {
@@ -353,7 +352,7 @@ int main()
 
         window.draw(spriteNpc);
 
-	window.draw(score);
+	    window.draw(score);
 
         window.display();
     }
