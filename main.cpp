@@ -135,11 +135,22 @@ int main()
     /* in the game, everything around the car moves instead of the car moving
     *  gameSpeed is the speed at which everything moves which can be considered
     * also to be how fast the car will appear to be moving to the player */
-    const float MAXGAMESPEED = 1500.0f;
+    const float MAXGAMESPEED = 1100.0f;
     float gameSpeed = 0.0f;
 
     sf::Font font;
     font.loadFromFile("assets/fonts/Bungee-Regular.ttf");
+
+    sf::Text message;
+    message.setFont(font);
+    message.setCharacterSize(50);
+    message.setFillColor(sf::Color::White);
+
+    sf::FloatRect messageRect = message.getLocalBounds();
+
+    message.setOrigin(messageRect.left + messageRect.width / 2.0f, messageRect.top + messageRect.height / 2.0f);
+    message.setPosition(vm.getDesktopMode().width - (vm.getDesktopMode().width / 1.3), vm.getDesktopMode().height - (vm.getDesktopMode().height / 1.4));
+    message.setString("Highway Racer");
 
     sf::Text score;
     score.setFont(font);
@@ -219,13 +230,13 @@ int main()
             // make sure that the car can't leave the road
             if(player.getPlayerPosition().x > 370)
             {
-                player.setPlayerPosition(player.getPlayerPosition().x - .8, player.getPlayerPosition().y);
+                player.setPlayerPosition(player.getPlayerPosition().x - 1.2, player.getPlayerPosition().y);
             }
         }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && gameState == GameState::RUNNING)
         {
             if(player.getPlayerPosition().x < 633)
             {
-                player.setPlayerPosition(player.getPlayerPosition().x + .8, player.getPlayerPosition().y);
+                player.setPlayerPosition(player.getPlayerPosition().x + 1.2, player.getPlayerPosition().y);
             }
         }
 
@@ -301,7 +312,7 @@ int main()
                 // move the odometer meter
 	            if(gameSpeed < MAXGAMESPEED)
 	            {
-		            dometerNeedle.setRotation(dometerNeedle.getRotation() + (gameSpeed/26 * dt.asSeconds()));
+		            dometerNeedle.setRotation(dometerNeedle.getRotation() + (gameSpeed/10 * dt.asSeconds()));
 	            }
 
 	        }else if(player.getCarState() == Player::CarState::DECELERATE)
@@ -311,7 +322,7 @@ int main()
                 // move the odometer the opposite way 
 		        if(gameSpeed > 0.0)
 		        {
-		            dometerNeedle.setRotation(dometerNeedle.getRotation() - (gameSpeed/37.5 * dt.asSeconds()));
+		            dometerNeedle.setRotation(dometerNeedle.getRotation() - (gameSpeed/14.5 * dt.asSeconds()));
 		        }
 	        }
 
@@ -367,6 +378,11 @@ int main()
         window.draw(spriteNpc);
 
 	    window.draw(score);
+
+        if(gameState == GameState::START)
+        {
+            window.draw(message);
+        }
 
         window.display();
     }
