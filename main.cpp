@@ -184,7 +184,6 @@ int main()
 	}
 	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameRunning)
         {
-
             player.setCarState(Player::CarState::ACCELERATE);
 
             if(gameSpeed < MAXGAMESPEED)
@@ -226,12 +225,12 @@ int main()
         *   Update the scene
         ******************************/
 
-	sf::Time dt = clock.restart();
+	    sf::Time dt = clock.restart();
 
-	std::stringstream ss;
+	    std::stringstream ss;
 
-	ss << "Score: " << player.getScore();;
-	score.setString(ss.str());
+	    ss << "Score: " << player.getScore();;
+	    score.setString(ss.str());
 
         if(gameRunning)
         {
@@ -309,16 +308,21 @@ int main()
 	    // if the we pass the npc, move the npc back to the front of the road
 	    if(spriteNpc.getPosition().y > 800)
 	    {
-		spriteNpc.setPosition((rand() % 345) + 344, (rand() % 1) - 2000);
+		    spriteNpc.setPosition((rand() % 345) + 344, (rand() % 1) - 2000);
 
 	        // set a new texture for the sprite
-		int textureChoice = rand() % 15;
-		spriteNpc.setTexture(textureCars[textureChoice]);
+		    int textureChoice = rand() % 15;
+		    spriteNpc.setTexture(textureCars[textureChoice]);
 
-		// increment player score
-		player.setScore(player.getScore() + 1);
+		    // increment player score
+		    player.setScore(player.getScore() + 1);
 	    }
 
+        // check for collision
+        if(spriteNpc.getGlobalBounds().intersects(player.getSprite().getGlobalBounds()))
+        {
+            gameRunning = false;
+        }
 	}
 
 
