@@ -129,7 +129,8 @@ int main()
     dometerNeedle.setOrigin(dometerBounds.left + dometerBounds.width - 5, dometerBounds.top + dometerBounds.height - 5);
     dometerNeedle.setRotation(225);
 
-    bool gameRunning = false;
+    enum GameState = {START, RUNNING, PAUSED, OVER};
+    GameState gameState = GameState::START;
 
     /* in the game, everything around the car moves instead of the car moving
     *  gameSpeed is the speed at which everything moves which can be considered
@@ -163,18 +164,18 @@ int main()
 		window.close();
 	    }else if(event.type == sf::Event::KeyPressed)
 	    {
-		if(event.key.code == sf::Keyboard::Enter)
-		{
-		    if(!gameRunning)
+		    if(event.key.code == sf::Keyboard::Enter)
 		    {
-			gameRunning = true;
-			std::cout << "Game Running" << std::endl;
-		    }else
-		    {
-			gameRunning = false;
-			std::cout << "Game Paused" << std::endl;
+		        if(gameState == GameState::START || gameState == GameState::PAUSED)
+		        {
+			        gameState = GameState::RUNNING;
+			        std::cout << "Game Running" << std::endl;
+		        }else
+		        {
+			        gameState = GameState::PAUSED;
+			        std::cout << "Game Paused" << std::endl;
+		        }
 		    }
-		}
 	    }
 	}
 
@@ -182,17 +183,17 @@ int main()
 	{
 	    window.close();
 	}
-	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameRunning)
-        {
-            player.setCarState(Player::CarState::ACCELERATE);
+	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameState = GameState::RUNNING)
+    {
+        player.setCarState(Player::CarState::ACCELERATE);
 
-            if(gameSpeed < MAXGAMESPEED)
-            {
-               gameSpeed += 0.55;
-            }
-        }else
+        if(gameSpeed < MAXGAMESPEED)
         {
-	    if(gameRunning)
+           gameSpeed += 0.55;
+        }
+    }else
+    {
+	    if(gameState == GameState::RUNNING)
 	    {
                 player.setCarState(Player::CarState::DECELERATE);
 
@@ -201,17 +202,17 @@ int main()
                     gameSpeed -= 0.38;
                 }
 	    }
-        }
+    }
 
         // control player car
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && gameRunning)
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && gameState == GameState::RUNNING)
         {
             // make sure that the car can't leave the road
             if(player.getPlayerPosition().x > 370)
             {
                 player.setPlayerPosition(player.getPlayerPosition().x - .8, player.getPlayerPosition().y);
             }
-        }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && gameRunning)
+        }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && gameState == GameState::RUNNING)
         {
             if(player.getPlayerPosition().x < 633)
             {
@@ -232,98 +233,98 @@ int main()
 	    ss << "Score: " << player.getScore();;
 	    score.setString(ss.str());
 
-        if(gameRunning)
+        if(gameState == GameState::RUNNING)
         {
 
             for(int i=0; i<5; i++)
-	    {
-		// road stripes
-		spriteRoadStripe[i].setPosition(spriteRoadStripe[i].getPosition().x, (spriteRoadStripe[i].getPosition().y + (gameSpeed * dt.asSeconds())));
-
-		/* when the stripe gets off screen, put it back at the top to give the illusion of
-		* endless road */
-		if(spriteRoadStripe[i].getPosition().y > 679)
-		{
-		    spriteRoadStripe[i].setPosition(spriteRoadStripe[i].getPosition().x, -70);
-		}
-	    }
-
-            // do the same for the environment detail but move them at a slightly slower speed
-	    for(int i=0; i<NUMBEROFROCKS; i++)
-	    {
-		spriteRock[i].setPosition(spriteRock[i].getPosition().x, (spriteRock[i].getPosition().y + (gameSpeed/1.5 * dt.asSeconds())));
-
-		if(spriteRock[i].getPosition().y > 679)
-		{
-		    if(i == 0)
-		    {
-			spriteRock[i].setPosition((rand() % 280), (rand() % -1) - 1000);
-		    }
-		    else
-		    {
-			spriteRock[i].setPosition((rand() % 810) + 780, (rand() % -1) - 500);
-		    }
-		}
-	    }
-
-	    for(int i=0; i<NUMBEROFTREES; i++)
-	    {
-		spriteTree[i].setPosition(spriteTree[i].getPosition().x, (spriteTree[i].getPosition().y + (gameSpeed/1.5 * dt.asSeconds())));
-
-		if(spriteTree[i].getPosition().y > 800)
-		{
-		    if(i == 0)
-		    {
-			spriteTree[i].setPosition((rand() % 280), (rand() % -1) - 200);
-		    }
-		    else
-		    {
-			spriteTree[i].setPosition((rand() % 770) + 750, (rand() % -1) - 200);
-		    }
-		}
-	    }
-
-            // move the npc cars
-	    if(player.getCarState() == Player::CarState::ACCELERATE)
-	    {
-		spriteNpc.setPosition(spriteNpc.getPosition().x, (spriteNpc.getPosition().y + (gameSpeed * dt.asSeconds())));
-
-                // move the odometer meter
-	        if(gameSpeed < MAXGAMESPEED)
 	        {
-		    dometerNeedle.setRotation(dometerNeedle.getRotation() + (gameSpeed/26 * dt.asSeconds()));
+		        // road stripes
+		        spriteRoadStripe[i].setPosition(spriteRoadStripe[i].getPosition().x, (spriteRoadStripe[i].getPosition().y + (gameSpeed * dt.asSeconds())));
+
+		        /* when the stripe gets off screen, put it back at the top to give the illusion of
+		        * endless road */
+		        if(spriteRoadStripe[i].getPosition().y > 679)
+		        {
+		            spriteRoadStripe[i].setPosition(spriteRoadStripe[i].getPosition().x, -70);
+		        }
 	        }
 
-	    }else if(player.getCarState() == Player::CarState::DECELERATE)
-	    {
-	        spriteNpc.setPosition(spriteNpc.getPosition().x, (spriteNpc.getPosition().y - (gameSpeed/3 * dt.asSeconds())));
+            // do the same for the environment detail but move them at a slightly slower speed
+	        for(int i=0; i<NUMBEROFROCKS; i++)
+	        {
+		        spriteRock[i].setPosition(spriteRock[i].getPosition().x, (spriteRock[i].getPosition().y + (gameSpeed/1.5 * dt.asSeconds())));
+
+		        if(spriteRock[i].getPosition().y > 679)
+		        {
+		            if(i == 0)
+		            {
+			            spriteRock[i].setPosition((rand() % 280), (rand() % -1) - 1000);
+		            }
+		            else
+		            {
+			            spriteRock[i].setPosition((rand() % 810) + 780, (rand() % -1) - 500);
+		            }
+		        }
+	        }
+
+	        for(int i=0; i<NUMBEROFTREES; i++)
+	        {
+		        spriteTree[i].setPosition(spriteTree[i].getPosition().x, (spriteTree[i].getPosition().y + (gameSpeed/1.5 * dt.asSeconds())));
+
+		        if(spriteTree[i].getPosition().y > 800)
+		        {
+		            if(i == 0)
+		            {
+			            spriteTree[i].setPosition((rand() % 280), (rand() % -1) - 200);
+		            }
+		            else
+		            {
+			            spriteTree[i].setPosition((rand() % 770) + 750, (rand() % -1) - 200);
+		            }
+		        }
+	        }
+
+            // move the npc cars
+	        if(player.getCarState() == Player::CarState::ACCELERATE)
+	        {
+		        spriteNpc.setPosition(spriteNpc.getPosition().x, (spriteNpc.getPosition().y + (gameSpeed * dt.asSeconds())));
+
+                // move the odometer meter
+	            if(gameSpeed < MAXGAMESPEED)
+	            {
+		            dometerNeedle.setRotation(dometerNeedle.getRotation() + (gameSpeed/26 * dt.asSeconds()));
+	            }
+
+	        }else if(player.getCarState() == Player::CarState::DECELERATE)
+	        {
+	            spriteNpc.setPosition(spriteNpc.getPosition().x, (spriteNpc.getPosition().y - (gameSpeed/3 * dt.asSeconds())));
 
                 // move the odometer the opposite way 
-		if(gameSpeed > 0.0)
-		{
-		    dometerNeedle.setRotation(dometerNeedle.getRotation() - (gameSpeed/37.5 * dt.asSeconds()));
-		}
+		        if(gameSpeed > 0.0)
+		        {
+		            dometerNeedle.setRotation(dometerNeedle.getRotation() - (gameSpeed/37.5 * dt.asSeconds()));
+		        }
+	        }
+
+	        // if the we pass the npc, move the npc back to the front of the road
+	        if(spriteNpc.getPosition().y > 800)
+	        {
+		        spriteNpc.setPosition((rand() % 345) + 344, (rand() % 1) - 2000);
+
+	            // set a new texture for the sprite
+		        int textureChoice = rand() % 15;
+		        spriteNpc.setTexture(textureCars[textureChoice]);
+
+		        // increment player score
+		        player.setScore(player.getScore() + 1);
+	        }
+
+            // check for collision
+            if(spriteNpc.getGlobalBounds().intersects(player.getSprite().getGlobalBounds()))
+            {
+                gameState = GameState::OVER;
+            }
 	    }
-
-	    // if the we pass the npc, move the npc back to the front of the road
-	    if(spriteNpc.getPosition().y > 800)
-	    {
-		    spriteNpc.setPosition((rand() % 345) + 344, (rand() % 1) - 2000);
-
-	        // set a new texture for the sprite
-		    int textureChoice = rand() % 15;
-		    spriteNpc.setTexture(textureCars[textureChoice]);
-
-		    // increment player score
-		    player.setScore(player.getScore() + 1);
-	    }
-
-        // check for collision
-        if(spriteNpc.getGlobalBounds().intersects(player.getSprite().getGlobalBounds()))
-        {
-            gameRunning = false;
-        }
-	}
 
 
         /*****************************
