@@ -316,8 +316,11 @@ int main()
 	            }
 
 	        }else if(player.getCarState() == Player::CarState::DECELERATE)
-	        {
-	            spriteNpc.setPosition(spriteNpc.getPosition().x, (spriteNpc.getPosition().y - (gameSpeed/3 * dt.asSeconds())));
+	        {   
+                if(spriteNpc.getPosition().y > -1000)
+                {
+	                spriteNpc.setPosition(spriteNpc.getPosition().x, (spriteNpc.getPosition().y - (800 * dt.asSeconds())));
+                }
 
                 // move the odometer the opposite way 
 		        if(gameSpeed > 0.0)
