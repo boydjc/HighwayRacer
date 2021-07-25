@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
 #include <iostream>
 #include <sstream>
@@ -129,6 +130,17 @@ int main()
     dometerNeedle.setOrigin(dometerBounds.left + dometerBounds.width - 5, dometerBounds.top + dometerBounds.height - 5);
     dometerNeedle.setRotation(225);
 
+    // sounds
+    sf::Music introMusic;
+    introMusic.openFromFile("assets/sounds/Intro.wav");
+    introMusic.setLoop(true);
+    introMusic.play();
+
+    sf::SoundBuffer crashSound;
+    crashSound.loadFromFile("assets/sounds/Crash.wav");
+    
+    sf::Sound gameSound;
+
     enum class GameState {START, RUNNING, PAUSED, OVER};
     GameState gameState = GameState::START;
 
@@ -180,6 +192,7 @@ int main()
 		        if(gameState == GameState::START || gameState == GameState::PAUSED)
 		        {
 			        gameState = GameState::RUNNING;
+                    introMusic.stop();
 			        std::cout << "Game Running" << std::endl;
 		        }else if(gameState == GameState::RUNNING)
 		        {
@@ -193,6 +206,7 @@ int main()
                     gameSpeed = 0.0f;
                     dometerNeedle.setRotation(225);
                     player.setScore(0);
+                    introMusic.play();
                     gameState = GameState::START;
                 }
 		    }
@@ -345,6 +359,8 @@ int main()
             // check for collision
             if(spriteNpc.getGlobalBounds().intersects(player.getSprite().getGlobalBounds()))
             {
+                gameSound.setBuffer(crashSound);
+                gameSound.play();
                 gameState = GameState::OVER;
             }
 	    }
