@@ -129,7 +129,7 @@ int main()
     dometerNeedle.setOrigin(dometerBounds.left + dometerBounds.width - 5, dometerBounds.top + dometerBounds.height - 5);
     dometerNeedle.setRotation(225);
 
-    enum GameState = {START, RUNNING, PAUSED, OVER};
+    enum class GameState {START, RUNNING, PAUSED, OVER};
     GameState gameState = GameState::START;
 
     /* in the game, everything around the car moves instead of the car moving
@@ -170,11 +170,20 @@ int main()
 		        {
 			        gameState = GameState::RUNNING;
 			        std::cout << "Game Running" << std::endl;
-		        }else
+		        }else if(gameState == GameState::RUNNING)
 		        {
 			        gameState = GameState::PAUSED;
 			        std::cout << "Game Paused" << std::endl;
-		        }
+		        }else if(gameState == GameState::OVER)
+                {
+                    // reset the game
+                    player.setPlayerPosition(575, 500);
+                    spriteNpc.setPosition((rand() % 345) + 344, (rand() % 1) - 2000);
+                    gameSpeed = 0.0f;
+                    dometerNeedle.setRotation(225);
+                    player.setScore(0);
+                    gameState = GameState::START;
+                }
 		    }
 	    }
 	}
@@ -183,7 +192,7 @@ int main()
 	{
 	    window.close();
 	}
-	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameState = GameState::RUNNING)
+	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameState == GameState::RUNNING)
     {
         player.setCarState(Player::CarState::ACCELERATE);
 
