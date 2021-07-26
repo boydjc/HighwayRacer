@@ -150,6 +150,13 @@ int main()
     sf::Sound carRevSound;
     carRevSound.setBuffer(carRevBuffer);
 
+    // car rev reverse
+    sf::SoundBuffer carRevReverseBuffer;
+    carRevReverseBuffer.loadFromFile("assets/sounds/CarRevReverse.wav");
+
+    sf::Sound carRevReverseSound;
+    carRevReverseSound.setBuffer(carRevReverseBuffer);
+
     enum class GameState {START, RUNNING, PAUSED, OVER};
     GameState gameState = GameState::START;
 
@@ -187,81 +194,92 @@ int main()
         *   Handle the player's input
         ******************************/
 
-	sf::Event event;
+	    sf::Event event;
 
-	while(window.pollEvent(event))
-	{
-	    if(event.type == sf::Event::Closed)
+	    while(window.pollEvent(event))
 	    {
-		window.close();
-	    }else if(event.type == sf::Event::KeyPressed)
-	    {
-		    if(event.key.code == sf::Keyboard::Enter)
-		    {
-		        if(gameState == GameState::START || gameState == GameState::PAUSED)
+	        if(event.type == sf::Event::Closed)
+	        {
+		    window.close();
+	        }else if(event.type == sf::Event::KeyPressed)
+	        {
+		        if(event.key.code == sf::Keyboard::Enter)
 		        {
-			        gameState = GameState::RUNNING;
-                    introMusic.stop();
-			        std::cout << "Game Running" << std::endl;
-		        }else if(gameState == GameState::RUNNING)
-		        {
-			        gameState = GameState::PAUSED;
-			        std::cout << "Game Paused" << std::endl;
-		        }else if(gameState == GameState::OVER)
-                {
-                    // reset the game
-                    player.setPlayerPosition(575, 500);
-                    spriteNpc.setPosition((rand() % 345) + 344, (rand() % 1) - 2000);
-                    gameSpeed = 0.0f;
-                    dometerNeedle.setRotation(225);
-                    player.setScore(0);
-                    introMusic.play();
-                    gameState = GameState::START;
-                }
-		    }
+		            if(gameState == GameState::START || gameState == GameState::PAUSED)
+		            {
+			            gameState = GameState::RUNNING;
+                        introMusic.stop();
+			            std::cout << "Game Running" << std::endl;
+		            }else if(gameState == GameState::RUNNING)
+		            {
+			            gameState = GameState::PAUSED;
+			            std::cout << "Game Paused" << std::endl;
+		            }else if(gameState == GameState::OVER)
+                    {
+                        // reset the game
+                        player.setPlayerPosition(575, 500);
+                        spriteNpc.setPosition((rand() % 345) + 344, (rand() % 1) - 2000);
+                        gameSpeed = 0.0f;
+                        dometerNeedle.setRotation(225);
+                        player.setScore(0);
+                        introMusic.play();
+                        gameState = GameState::START;
+                    }
+		        }
+	        }
 	    }
-	}
 
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-	{
-	    window.close();
-	}
-	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameState == GameState::RUNNING)
-    {
-        if(!(player.getCarState() == Player::CarState::ACCELERATE))
-        {
-            player.setCarState(Player::CarState::ACCELERATE);
-            carRevSound.play();
-        }
-
-        // check where we are at in the car rev sound file and 
-        // loop it when it gets to a certain time
-
-        if(int(carRevSound.getPlayingOffset().asSeconds()) == 30)
-        {
-            carRevSound.setPlayingOffset(sf::seconds(20));
-        }
-
-        if(gameSpeed < MAXGAMESPEED)
-        {
-           gameSpeed += 0.55;
-        }
-    }else
-    {
-	    if(gameState == GameState::RUNNING)
+	    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 	    {
-            if(!(player.getCarState() == Player::CarState::DECELERATE))
+	        window.close();
+	    }
+	    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameState == GameState::RUNNING)
+        {
+            if(!(player.getCarState() == Player::CarState::ACCELERATE))
+            {
+                player.setCarState(Player::CarState::ACCELERATE);
+                if(carRevReverseSound.getStatus() == sf::SoundSource::Status::Playing)
+                {
+                    carRevReverseSound.stop();
+                }    
+
+                carRevSound.play();
+            }
+
+            // check where we are at in the car rev sound file and 
+            // loop it when it gets to a certain time
+
+            if(int(carRevSound.getPlayingOffset().asSeconds()) == 30)
+            {
+                carRevSound.setPlayingOffset(sf::seconds(20));
+            }
+
+            if(gameSpeed < MAXGAMESPEED)
+            {
+                gameSpeed += 0.55;
+            }
+        }else if(!(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) && gameState == GameState::RUNNING)
+        {
+            if(player.getCarState() == Player::CarState::ACCELERATE)
             {
                 player.setCarState(Player::CarState::DECELERATE);
-                carRevSound.stop();
+                if(carRevSound.getStatus() == sf::SoundSource::Status::Playing)
+                {
+                    carRevSound.stop();
+                }    
+                carRevReverseSound.play();
             }
 
             if(gameSpeed > 0.0)
             {
                 gameSpeed -= 0.38;
             }
-	    }
-    }
+        }
+
+        if(gameSpeed <= 0.0)
+        {
+            player.setCarState(Player::CarState::STOPPED);
+        }   
 
         // control player car
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && gameState == GameState::RUNNING)
