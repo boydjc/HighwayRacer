@@ -136,10 +136,19 @@ int main()
     introMusic.setLoop(true);
     introMusic.play();
 
-    sf::SoundBuffer crashSound;
-    crashSound.loadFromFile("assets/sounds/Crash.wav");
+    // car crash sound
+    sf::SoundBuffer crashSoundBuffer;
+    crashSoundBuffer.loadFromFile("assets/sounds/Crash.wav");
     
-    sf::Sound gameSound;
+    sf::Sound crashSound;
+    crashSound.setBuffer(crashSoundBuffer);
+
+    // car rev sound
+    sf::SoundBuffer carRevBuffer;
+    carRevBuffer.loadFromFile("assets/sounds/CarRev.wav");
+    
+    sf::Sound carRevSound;
+    carRevSound.setBuffer(carRevBuffer);
 
     enum class GameState {START, RUNNING, PAUSED, OVER};
     GameState gameState = GameState::START;
@@ -219,7 +228,19 @@ int main()
 	}
 	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameState == GameState::RUNNING)
     {
-        player.setCarState(Player::CarState::ACCELERATE);
+        if(!(player.getCarState() == Player::CarState::ACCELERATE))
+        {
+            player.setCarState(Player::CarState::ACCELERATE);
+            carRevSound.play();
+        }
+
+        // check where we are at in the car rev sound file and 
+        // loop it when it gets to a certain time
+
+        if(int(carRevSound.getPlayingOffset().asSeconds()) == 35)
+        {
+            carRevSound.setPlayingOffset(sf::seconds(20));
+        }
 
         if(gameSpeed < MAXGAMESPEED)
         {
@@ -229,12 +250,16 @@ int main()
     {
 	    if(gameState == GameState::RUNNING)
 	    {
+            if(!(player.getCarState() == Player::CarState::DECELERATE))
+            {
                 player.setCarState(Player::CarState::DECELERATE);
+                carRevSound.stop();
+            }
 
-                if(gameSpeed > 0.0)
-                {
-                    gameSpeed -= 0.38;
-                }
+            if(gameSpeed > 0.0)
+            {
+                gameSpeed -= 0.38;
+            }
 	    }
     }
 
@@ -357,12 +382,15 @@ int main()
 	        }
 
             // check for collision
-            if(spriteNpc.getGlobalBounds().intersects(player.getSprite().getGlobalBounds()))
+            /*if(spriteNpc.getGlobalBounds().intersects(player.getSprite().getGlobalBounds()))
             {
-                gameSound.setBuffer(crashSound);
-                gameSound.play();
+                crashSound.play();
+                if(carRevSound.getStatus() == sf::SoundSource::Status::Playing)
+                {
+                    carRevSound.stop();
+                } 
                 gameState = GameState::OVER;
-            }
+            }*/
 	    }
 
 
