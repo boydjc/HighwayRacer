@@ -237,8 +237,6 @@ int main()
         // check where we are at in the car rev sound file and 
         // loop it when it gets to a certain time
 
-        std::cout << int(carRevSound.getPlayingOffset().asSeconds()) << std::endl;
-
         if(int(carRevSound.getPlayingOffset().asSeconds()) == 30)
         {
             carRevSound.setPlayingOffset(sf::seconds(20));
@@ -384,7 +382,7 @@ int main()
 	        }
 
             // check for collision
-            /*if(spriteNpc.getGlobalBounds().intersects(player.getSprite().getGlobalBounds()))
+            if(spriteNpc.getGlobalBounds().intersects(player.getSprite().getGlobalBounds()))
             {
                 crashSound.play();
                 if(carRevSound.getStatus() == sf::SoundSource::Status::Playing)
@@ -392,7 +390,7 @@ int main()
                     carRevSound.stop();
                 } 
                 gameState = GameState::OVER;
-            }*/
+            }
 	    }
 
 
