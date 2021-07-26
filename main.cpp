@@ -237,7 +237,9 @@ int main()
         // check where we are at in the car rev sound file and 
         // loop it when it gets to a certain time
 
-        if(int(carRevSound.getPlayingOffset().asSeconds()) == 35)
+        std::cout << int(carRevSound.getPlayingOffset().asSeconds()) << std::endl;
+
+        if(int(carRevSound.getPlayingOffset().asSeconds()) == 30)
         {
             carRevSound.setPlayingOffset(sf::seconds(20));
         }
