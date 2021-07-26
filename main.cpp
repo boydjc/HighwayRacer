@@ -241,7 +241,15 @@ int main()
                 if(carRevReverseSound.getStatus() == sf::SoundSource::Status::Playing)
                 {
                     carRevReverseSound.stop();
-                }    
+                }   
+
+                if(gameSpeed > 50)
+                {
+                    carRevSound.setPlayingOffset(sf::seconds(10));
+                }else
+                {
+                    carRevSound.setPlayingOffset(sf::seconds(0));
+                }       
 
                 carRevSound.play();
             }
