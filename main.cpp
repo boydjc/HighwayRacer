@@ -283,7 +283,7 @@ int main()
                 if(carRevSound.getStatus() == sf::SoundSource::Status::Playing)
                 {
                     carRevSound.stop();
-                }    
+                } 
                 carRevReverseSound.play();
             }
 
@@ -409,9 +409,9 @@ int main()
                
                 // move the odometer the opposite way
                 if((dometerNeedle.getRotation() >= 0 && dometerNeedle.getRotation() <= 121) || 
-                    (dometerNeedle.getRotation() <= 360 && dometerNeedle.getRotation() >= 200))
+                    (dometerNeedle.getRotation() <= 360 && dometerNeedle.getRotation() >= 225))
                 {
-                    dometerNeedle.setRotation(dometerNeedle.getRotation() - (10 * dt.asSeconds()));
+                    dometerNeedle.setRotation(dometerNeedle.getRotation() - (47 * dt.asSeconds()));
                 }
 	        }
 
