@@ -200,7 +200,7 @@ int main()
 	    {
 	        if(event.type == sf::Event::Closed)
 	        {
-		    window.close();
+		        window.close();
 	        }else if(event.type == sf::Event::KeyPressed)
 	        {
 		        if(event.key.code == sf::Keyboard::Enter)
@@ -209,11 +209,9 @@ int main()
 		            {
 			            gameState = GameState::RUNNING;
                         introMusic.stop();
-			            std::cout << "Game Running" << std::endl;
 		            }else if(gameState == GameState::RUNNING)
 		            {
 			            gameState = GameState::PAUSED;
-			            std::cout << "Game Paused" << std::endl;
 		            }else if(gameState == GameState::OVER)
                     {
                         // reset the game
@@ -374,11 +372,12 @@ int main()
 	        {
 		        spriteNpc.setPosition(spriteNpc.getPosition().x, (spriteNpc.getPosition().y + (gameSpeed * dt.asSeconds())));
 
-                // move the odometer meter
-	            if(gameSpeed < MAXGAMESPEED)
-	            {
-		            dometerNeedle.setRotation(dometerNeedle.getRotation() + (gameSpeed/10 * dt.asSeconds()));
-	            }
+                // move the odometer
+                if((dometerNeedle.getRotation() >= 0 && dometerNeedle.getRotation() <= 120) || 
+                    (dometerNeedle.getRotation() <= 360 && dometerNeedle.getRotation() >= 190))
+                {
+		            dometerNeedle.setRotation(dometerNeedle.getRotation() + (10 * dt.asSeconds()));
+                }
 
 	        }else if(player.getCarState() == Player::CarState::DECELERATE)
 	        {   
@@ -387,11 +386,13 @@ int main()
 	                spriteNpc.setPosition(spriteNpc.getPosition().x, (spriteNpc.getPosition().y - (800 * dt.asSeconds())));
                 }
 
-                // move the odometer the opposite way 
-		        if(gameSpeed > 0.0)
-		        {
-		            dometerNeedle.setRotation(dometerNeedle.getRotation() - (gameSpeed/14.5 * dt.asSeconds()));
-		        }
+               
+                // move the odometer the opposite way
+                if((dometerNeedle.getRotation() >= 0 && dometerNeedle.getRotation() <= 121) || 
+                    (dometerNeedle.getRotation() <= 360 && dometerNeedle.getRotation() >= 200))
+                {
+                    dometerNeedle.setRotation(dometerNeedle.getRotation() - (10 * dt.asSeconds()));
+                }
 	        }
 
 	        // if the we pass the npc, move the npc back to the front of the road
@@ -408,7 +409,7 @@ int main()
 	        }
 
             // check for collision
-            if(spriteNpc.getGlobalBounds().intersects(player.getSprite().getGlobalBounds()))
+            /*if(spriteNpc.getGlobalBounds().intersects(player.getSprite().getGlobalBounds()))
             {
                 crashSound.play();
                 if(carRevSound.getStatus() == sf::SoundSource::Status::Playing)
@@ -416,7 +417,7 @@ int main()
                     carRevSound.stop();
                 } 
                 gameState = GameState::OVER;
-            }
+            }*/
 	    }
 
 
