@@ -157,6 +157,14 @@ int main()
     sf::Sound carRevReverseSound;
     carRevReverseSound.setBuffer(carRevReverseBuffer);
 
+    // car idle
+    sf::SoundBuffer carIdleBuffer;
+    carIdleBuffer.loadFromFile("assets/sounds/CarIdle.wav");
+
+    sf::Sound carIdleSound;
+    carIdleSound.setBuffer(carIdleBuffer);
+    carIdleSound.setLoop(true);
+
     enum class GameState {START, RUNNING, PAUSED, OVER};
     GameState gameState = GameState::START;
 
@@ -239,7 +247,10 @@ int main()
                 if(carRevReverseSound.getStatus() == sf::SoundSource::Status::Playing)
                 {
                     carRevReverseSound.stop();
-                }   
+                }else if(carIdleSound.getStatus() == sf::SoundSource::Status::Playing)
+                {
+                    carIdleSound.stop();
+                }
 
                 if(gameSpeed > 50)
                 {
@@ -285,6 +296,15 @@ int main()
         if(gameSpeed <= 0.0)
         {
             player.setCarState(Player::CarState::STOPPED);
+            if(carRevReverseSound.getStatus() == sf::SoundSource::Status::Playing)
+            {
+                carRevReverseSound.stop();
+            }
+            
+            if(carIdleSound.getStatus() == sf::SoundSource::Status::Stopped)
+            {
+                carIdleSound.play();
+            }
         }   
 
         // control player car
