@@ -220,6 +220,9 @@ int main()
 		            }else if(gameState == GameState::RUNNING)
 		            {
 			            gameState = GameState::PAUSED;
+                        message.setString("Paused");
+                        message.setPosition(vm.getDesktopMode().width - (vm.getDesktopMode().width / 1.45), 
+                                            vm.getDesktopMode().height - (vm.getDesktopMode().height / 1.45));
 		            }else if(gameState == GameState::OVER)
                     {
                         // reset the game
@@ -230,6 +233,9 @@ int main()
                         player.setScore(0);
                         introMusic.play();
                         gameState = GameState::START;
+                        message.setString("Highway Racer");
+                        message.setPosition(vm.getDesktopMode().width - (vm.getDesktopMode().width / 1.3), 
+                                            vm.getDesktopMode().height - (vm.getDesktopMode().height / 1.4));
                     }
 		        }
 	        }
@@ -429,7 +435,7 @@ int main()
 	        }
 
             // check for collision
-            /*if(spriteNpc.getGlobalBounds().intersects(player.getSprite().getGlobalBounds()))
+            if(spriteNpc.getGlobalBounds().intersects(player.getSprite().getGlobalBounds()))
             {
                 crashSound.play();
                 if(carRevSound.getStatus() == sf::SoundSource::Status::Playing)
@@ -437,7 +443,10 @@ int main()
                     carRevSound.stop();
                 } 
                 gameState = GameState::OVER;
-            }*/
+                message.setString("Game Over!");
+                message.setPosition(vm.getDesktopMode().width - (vm.getDesktopMode().width / 1.4), 
+                                            vm.getDesktopMode().height - (vm.getDesktopMode().height / 1.45));
+            }
 	    }
 
 
@@ -473,7 +482,7 @@ int main()
 
 	    window.draw(score);
 
-        if(gameState == GameState::START)
+        if(gameState == GameState::START || gameState == GameState::PAUSED || gameState == GameState::OVER)
         {
             window.draw(message);
         }
