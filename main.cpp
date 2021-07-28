@@ -448,8 +448,16 @@ int main()
 		        player.setScore(player.getScore() + 1);
 	        }
 
+            // here we are going to get the player boundaries and modify them
+            // a little to get a little more realisic collision
+            sf::FloatRect playerBounds = player.getSprite().getGlobalBounds();
+            sf::FloatRect playerModBounds = sf::FloatRect(playerBounds.left+10,
+                                            playerBounds.top+10,
+                                            playerBounds.width-10,
+                                            playerBounds.height-10);
+
             // check for collision
-            if(spriteNpc.getGlobalBounds().intersects(player.getSprite().getGlobalBounds()))
+            if(spriteNpc.getGlobalBounds().intersects(playerModBounds))
             {
                 crashSound.play();
                 if(carRevSound.getStatus() == sf::SoundSource::Status::Playing)
