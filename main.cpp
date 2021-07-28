@@ -216,6 +216,13 @@ int main()
 		            if(gameState == GameState::START || gameState == GameState::PAUSED)
 		            {
 			            gameState = GameState::RUNNING;
+                        if(carRevSound.getStatus() == sf::SoundSource::Status::Paused)
+                        {
+                            carRevSound.play();
+                        }else if(carRevReverseSound.getStatus() == sf::SoundSource::Status::Paused)
+                        {
+                            carRevReverseSound.play();
+                        }
                         introMusic.stop();
 		            }else if(gameState == GameState::RUNNING)
 		            {
@@ -223,6 +230,13 @@ int main()
                         message.setString("Paused");
                         message.setPosition(vm.getDesktopMode().width - (vm.getDesktopMode().width / 1.45), 
                                             vm.getDesktopMode().height - (vm.getDesktopMode().height / 1.45));
+                        if(carRevSound.getStatus() == sf::SoundSource::Status::Playing)
+                        {
+                            carRevSound.pause();
+                        }else if(carRevReverseSound.getStatus() == sf::SoundSource::Status::Playing)
+                        {
+                            carRevReverseSound.pause();
+                        }
 		            }else if(gameState == GameState::OVER)
                     {
                         // reset the game
